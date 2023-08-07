@@ -10,14 +10,22 @@
 
             <ion-item>
               <ion-input type="email" label="Correo electrónico" placeholder="Correo electrónico"
-                labelPlacement="floating"></ion-input>
+                labelPlacement="floating" formControlName="email"></ion-input>
               <ion-icon slot="end" name="mail"></ion-icon>
+            </ion-item>
+            <ion-item *ngIf="getField('email')?.invalid && (getField('email')?.dirty || getField('email')?.touched)">
+              <ion-note color="danger" *ngIf="getField('email')?.hasError('required')">Campo requerido.</ion-note>
+              <ion-note color="danger" *ngIf="getField('email')?.hasError('pattern')">No es un correo valido</ion-note>
             </ion-item>
 
             <ion-item>
-              <ion-input type="password" label="Contraseña" placeholder="Contraseña"
-                labelPlacement="floating"></ion-input>
+              <ion-input type="password" label="Contraseña" placeholder="Contraseña" labelPlacement="floating"
+                formControlName="password"></ion-input>
               <ion-icon slot="end" name="eye"></ion-icon>
+            </ion-item>
+            <ion-item
+              *ngIf="getField('password')?.invalid && (getField('password')?.dirty || getField('password')?.touched)">
+              <ion-note color="danger" *ngIf="getField('password')?.hasError('required')">Campo requerido.</ion-note>
             </ion-item>
 
           </ion-list>
