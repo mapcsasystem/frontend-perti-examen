@@ -8,13 +8,14 @@ const routes: Routes = [
       import('./auth/auth.module').then((m) => m.AuthPageModule),
   },
   {
-    path: 'home',
+    path: 'dashboard',
     loadChildren: () =>
-      import('./home/home.module').then((m) => m.HomePageModule),
+      import('./dashboard/dashboard.module').then((m) => m.DashboardPageModule),
   },
+
   {
     path: '**',
-    redirectTo: 'home',
+    redirectTo: 'auth',
     pathMatch: 'full',
   },
 ];
