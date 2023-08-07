@@ -1,0 +1,22 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title color="light">Detalle de pelicula</ion-title>
+    <ion-button slot="end" color="primary" fill="clear" (click)="closeModal()">
+      <ion-icon slot="icon-only" name="close" color="light"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <img [alt]="movie.name" [src]="movie.image?.medium" />
+    <ion-card-header>
+      <ion-card-title>{{movie.name}}</ion-card-title>
+      <ion-card-subtitle>{{movie.season}}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      Raiting: {{movie.rating}}
+    </ion-card-content>
+  </ion-card>
+</ion-content>

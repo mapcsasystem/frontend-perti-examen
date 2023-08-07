@@ -6,9 +6,10 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { SharedDirective } from './shared.directive';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SharedDirective],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
