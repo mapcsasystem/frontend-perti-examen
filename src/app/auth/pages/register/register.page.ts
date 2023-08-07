@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { IUser } from '../../interfaces/user.interface';
 import { ValidatorsService } from 'src/app/shared/validators/validators.service';
-import { AlertsService } from 'src/app/shared/alerts/alerts.service';
+import { LocalNotificationsService } from 'src/app/shared/notifications/local-notifications.service';
 
 @Component({
   selector: 'app-register',
@@ -38,10 +38,10 @@ export class RegisterPage implements OnInit {
     private readonly _router: Router,
     private readonly _authService: AuthService,
     private readonly _v: ValidatorsService,
-    private readonly _alertsService: AlertsService
+    private readonly noti: LocalNotificationsService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this._authService.getRandomUser().subscribe((userRandom) => {
       this.user = {
         fullName: `${userRandom.name.first} ${userRandom.name.last}`,
@@ -52,7 +52,11 @@ export class RegisterPage implements OnInit {
       };
 
       this.form.patchValue(this.user);
-      this._alertsService.showToast('Se cargo el registro correctamente.');
+      this.noti.scheduleNotification(
+        'Registro',
+        'Usuario',
+        'Cargado correctamente'
+      );
       this.form.markAllAsTouched();
     });
   }
@@ -63,12 +67,12 @@ export class RegisterPage implements OnInit {
       return;
     }
     const { password1, ...resto } = this.form.value;
-    const resp = await this._authService.saveUser(resto);
+    const resp = this._authService.saveUser(resto);
     if (resp.ok) {
+      this.noti.scheduleNotification('Registro', 'Usuario', resp.msg);
       this.goToLogin();
-      this._alertsService.showToast(resp.msg);
     } else {
-      this._alertsService.showToast(resp.msg);
+      this.noti.scheduleNotification('Registro', 'Usuario', resp.msg);
     }
   }
 

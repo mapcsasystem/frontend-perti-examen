@@ -5,8 +5,14 @@ const config: CapacitorConfig = {
   appName: 'Miguel-Angel-Perez-Contreras',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
-  }
+    androidScheme: 'https',
+  },
+  plugins: {
+    LocalNotifications: {
+      iconColor: '#488AFF',
+      sound: 'beep.wav',
+    },
+  },
 };
 
 export default config;

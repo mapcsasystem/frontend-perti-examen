@@ -6,7 +6,7 @@ export interface IUser {
   createdAt: Date;
 }
 
-export interface IUserSave {
+export interface IUserMSG {
   ok: boolean;
   msg: string;
 }

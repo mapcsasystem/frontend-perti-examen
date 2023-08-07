@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { IUser } from '../../interfaces/user.interface';
-import { AlertsService } from 'src/app/shared/alerts/alerts.service';
+import { LocalNotificationsService } from 'src/app/shared/notifications/local-notifications.service';
 
 @Component({
   selector: 'app-login',
@@ -20,19 +20,35 @@ export class LoginPage implements OnInit {
     private readonly _fb: FormBuilder,
     private readonly _router: Router,
     private readonly _authService: AuthService,
-    private readonly _alertsService: AlertsService
+    private readonly localNotificationsService: LocalNotificationsService
   ) {}
   async ngOnInit(): Promise<void> {
-    const resp = await this._authService.getUser();
-    this.form.patchValue(resp);
+    const resp = this._authService.getUser();
+    const user = JSON.parse(resp.msg);
+    this.form.patchValue(user);
   }
 
-  submit(): void {
+  async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    this._router.navigateByUrl('dashboard', { replaceUrl: true });
+
+    const resp = await this._authService.login();
+    if (resp.ok) {
+      this._router.navigateByUrl('dashboard', { replaceUrl: true });
+      this.localNotificationsService.scheduleNotification(
+        'Login',
+        'Sesión',
+        resp.msg
+      );
+    } else {
+      this.localNotificationsService.scheduleNotification(
+        'Login',
+        'Sesión',
+        resp.msg
+      );
+    }
   }
 
   register(): void {

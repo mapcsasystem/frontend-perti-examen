@@ -6,11 +6,13 @@ const routes: Routes = [
     path: 'auth',
     loadChildren: () =>
       import('./auth/auth.module').then((m) => m.AuthPageModule),
+    // canActivate: [authGuardFn],
   },
   {
     path: 'dashboard',
     loadChildren: () =>
       import('./dashboard/dashboard.module').then((m) => m.DashboardPageModule),
+    // canActivate: [dashboardGuardFn],
   },
 
   {
