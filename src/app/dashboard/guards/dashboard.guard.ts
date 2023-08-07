@@ -6,16 +6,15 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 export const dashboardGuardFn: CanActivateFn = async (
   route: ActivatedRouteSnapshot
 ) => {
-  // const authService = inject(AuthService);
-  // const router = inject(Router);
-  // const user = (await authService.getUser()) as IUser;
-  // if (!user.email || !user.password) {
-  //   localStorage.clear();
-  //   router.navigateByUrl('auth/register', { replaceUrl: true });
-  //   return false;
-  // } else {
-  //   router.navigateByUrl('dashboard', { replaceUrl: true });
-  //   return true;
-  // }
-  return true;
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const resp = authService.getUser();
+  const user = JSON.parse(resp.msg) as IUser;
+  const { password, email } = user;
+  if (password && email) {
+    return true;
+  }
+  localStorage.clear();
+  router.navigateByUrl('/auth/login', { replaceUrl: true });
+  return false;
 };

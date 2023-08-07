@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LocalNotificationsService } from 'src/app/shared/notifications/local-notifications.service';
 import { DashboardService } from '../services/dashboard.service';
 import { IMovies } from '../interfaces/movie.interface';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, tap } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { ModalController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { DetailMovieComponent } from '../components/detail-movie/detail-movie.component';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,37 +21,51 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private readonly _noti: LocalNotificationsService,
     private readonly _dashboardService: DashboardService,
-    private readonly _modalCtrl: ModalController
+    private readonly _modalCtrl: ModalController,
+    private readonly loadingCtrl: LoadingController,
+    private readonly _authService: AuthService
   ) {}
-  ngOnInit(): void {
-    this._dashboardService.getAllMovies().subscribe((resp) => {
+
+  async ngOnInit() {
+    await this.showLoading();
+    this._dashboardService.getAllMovies().subscribe(async (resp) => {
       this.movies = resp;
+      await this.loadingCtrl.dismiss();
     });
     this._sub.add(
-      this.formInput.valueChanges.pipe(debounceTime(500)).subscribe((value) => {
-        if (value?.length === 0) {
-          this.getAllMovies();
-        } else {
-          this.searchMovies(value);
-        }
-      })
+      this.formInput.valueChanges
+        .pipe(
+          debounceTime(500),
+          tap(() => {})
+        )
+        .subscribe((value) => {
+          if (value?.length === 0) {
+            this.getAllMovies();
+          } else {
+            this.searchMovies(value);
+          }
+        })
     );
   }
 
-  searchMovies(termino: any) {
+  async searchMovies(termino: any) {
+    await this.showLoading();
     const term = termino as string;
     this._dashboardService
       .searchMovies(term)
       .pipe(debounceTime(300))
-      .subscribe((resp) => {
+      .subscribe(async (resp) => {
         console.log(resp);
         this.movies = resp;
+        await this.loadingCtrl.dismiss();
       });
   }
 
-  getAllMovies() {
-    this._dashboardService.getAllMovies().subscribe((resp) => {
+  async getAllMovies() {
+    await this.showLoading();
+    this._dashboardService.getAllMovies().subscribe(async (resp) => {
       this.movies = resp;
+      await this.loadingCtrl.dismiss();
     });
   }
 
@@ -67,6 +82,19 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     if (!data) return;
     console.log(data);
+  }
+
+  async showLoading() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Cargando...',
+    });
+
+    loading.present();
+  }
+
+  logout() {
+    const resp = this._authService.logout();
+    this._noti.scheduleNotification('Cerrar', 'Sesión', resp.msg);
   }
 
   ngOnDestroy(): void {

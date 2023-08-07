@@ -1,8 +1,12 @@
-import { Directive } from '@angular/core';
+import { Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
   selector: '[errorImage]',
 })
 export class ErrorImageDirective {
-  constructor() {}
+  constructor(private el: ElementRef) {}
+  @HostListener('error')
+  onError(): void {
+    this.el.nativeElement.src = 'assets/no-image-available.jpg';
+  }
 }
