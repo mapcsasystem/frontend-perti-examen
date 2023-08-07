@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { DetailMovieComponent } from '../components/detail-movie/detail-movie.component';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +24,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private readonly _dashboardService: DashboardService,
     private readonly _modalCtrl: ModalController,
     private readonly loadingCtrl: LoadingController,
-    private readonly _authService: AuthService
+    private readonly _authService: AuthService,
+    private readonly _router: Router
   ) {}
 
   async ngOnInit() {
@@ -94,6 +96,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   logout() {
     const resp = this._authService.logout();
+    this._router.navigateByUrl('auth/login', { replaceUrl: true });
     this._noti.scheduleNotification('Cerrar', 'Sesión', resp.msg);
   }
 

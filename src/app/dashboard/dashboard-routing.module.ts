@@ -8,10 +8,6 @@ const routes: Routes = [
     path: '',
     component: DashboardPage,
   },
-  {
-    path: '**',
-    redirectTo: '',
-  },
 ];
 
 @NgModule({
